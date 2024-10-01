@@ -324,20 +324,40 @@ def renew():
 			subprocess.check_output(f'usermod --password $(echo {p} | openssl passwd -1 -stdin) {u}', shell=True)
 			return "success"
 
-
 @app.route("/trial-ssh")
 def trial_ssh():
-	if request.remote_addr != '165.232.165.67':
-		return "NGAPAIN LU KONTOL!!!"
-	else:
-	#if request.headers.get("AUTH_KEY") == auth:
-		exp = "60"
-		x = subprocess.Popen(["trlsh"], stdin=subprocess.PIPE,
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
-		out, _ = x.communicate(bytes(f"{exp}\nx\nx", "utf-8"))
-		out = out.decode("utf-8")
-		#a = [x.group() for x in re.finditer("Username(.*)",out)]
-		return user + ":" + "1"
+    if request.remote_addr != '165.232.165.67':
+        return "NGAPAIN LU KONTOL!!!"
+    
+    try:
+        # Menjalankan script shell dan menangkap outputnya
+        exp = "60"
+        process = subprocess.Popen(
+            ["trlsh"],  # Ganti dengan path script yang benar
+            stdin=subprocess.PIPE, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, 
+            shell=False
+        )
+        
+        # Mengirimkan input ke proses
+        out, _ = process.communicate()
+        
+        # Decode output dari script shell ke string
+        output = out.decode("utf-8").strip()
+
+        # Parsing hasil output (misalnya: "RESULT:Trial-ABCD,1,60")
+        if "RESULT:" in output:
+            result = output.split("RESULT:")[1]
+            username, password, expired = result.split(",")
+
+            # Mengembalikan hasil ke user
+            return f"Username: {username}, Password: {password}, Expired: {expired} minutes"
+        else:
+            return "Failed to get the trial details."
+
+    except Exception as e:
+        return str(e)
 	
 @app.route("/restart")
 def restart():
