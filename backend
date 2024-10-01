@@ -324,6 +324,8 @@ def renew():
 			subprocess.check_output(f'usermod --password $(echo {p} | openssl passwd -1 -stdin) {u}', shell=True)
 			return "success"
 
+app = Flask(__name__)
+
 @app.route("/trial-ssh")
 def trial_ssh():
     if request.remote_addr != '165.232.165.67':
@@ -331,7 +333,6 @@ def trial_ssh():
     
     try:
         # Menjalankan script shell dan menangkap outputnya
-        exp = "60"
         process = subprocess.Popen(
             ["trlsh"],  # Ganti dengan path script yang benar
             stdin=subprocess.PIPE, 
@@ -351,13 +352,17 @@ def trial_ssh():
             result = output.split("RESULT:")[1]
             username, password, expired = result.split(",")
 
-            # Mengembalikan hasil ke user
-            return f"Username: {username}, Password: {password}, Expired: {expired} minutes"
+            # Mengembalikan hasil dalam format JSON
+            return jsonify({
+                "username": username,
+                "password": password,
+                "expired": f"{expired} minutes"
+            })
         else:
-            return "Failed to get the trial details."
+            return jsonify({"error": "Failed to get the trial details."}), 500
 
     except Exception as e:
-        return str(e)
+        return jsonify({"error": str(e)}), 500
 	
 @app.route("/restart")
 def restart():
