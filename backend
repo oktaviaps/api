@@ -331,12 +331,10 @@ def trial_ssh():
 		return "NGAPAIN LU KONTOL!!!"
 	else:
 	#if request.headers.get("AUTH_KEY") == auth:
-		user = "trialX"+str(random.randint(10,1000))
-		pw = "1"
-		exp = "60m"
+		exp = "60"
 		x = subprocess.Popen(["trlsh"], stdin=subprocess.PIPE,
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
-		out, _ = x.communicate(bytes(f"{user}\n{pw}\n{exp}\nx\nx", "utf-8"))
+		out, _ = x.communicate(bytes(f"{exp}\nx\nx", "utf-8"))
 		out = out.decode("utf-8")
 		#a = [x.group() for x in re.finditer("Username(.*)",out)]
 		return user + ":" + "1"
