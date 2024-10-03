@@ -6,29 +6,19 @@ pip3 install flask
 
 
 cd /usr/bin/
-rm -rf add-wstr
-rm -rf add-wsnone
-rm -rf add-wsstb
-rm -rf add-trl
-rm -rf add-trlsh
-rm -rf add-tr
-rm -rf add-addws
-rm -rf add-trnone
-rm -rf add-trstb
+rm -rf addssh
+rm -rf apitrojan
+rm -rf apivless
+rm -rf trlssh
+rm -rf apivmess
 rm -rf backend
 cd
 mkdir -p /root/back
 cd /root/back
-wget -q https://github.com/oktaviaps/api/raw/main/mekk.zip
-
-unzip mekk.zip
-mv newapi backend
+wget -q https://github.com/oktaviaps/api/raw/main/api.zip
+unzip api.zip
 chmod +x *
 mv * /usr/bin/
-sed -i -e 's/\r$//' /usr/bin/adtr
-sed -i -e 's/\r$//' /usr/bin/addws
-sed -i -e 's/\r$//' /usr/bin/trlsh
-sed -i -e 's/\r$//' /usr/bin/trl
 cd
 rm -rf /root/back
 
