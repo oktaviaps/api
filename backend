@@ -1,0 +1,193 @@
+import os,json
+from flask import Flask, request, jsonify
+import subprocess, random, re,sys
+try:
+	import speedtest
+except:
+	os.system("pip3 install speedtest-cli")
+std = subprocess.PIPE
+app = Flask(__name__)
+#auth = sys.argv[2]
+
+import math
+
+def convert_size(size_bytes):
+   if size_bytes == 0:
+       return "0B"
+   size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+   i = int(math.floor(math.log(size_bytes, 1024)))
+   p = math.pow(1024, i)
+   s = round(size_bytes / p, 2)
+   return "%s %s" % (s, size_name[i])
+
+@app.route("/backend")
+def backend():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+		return send_file("/usr/bin/backend")
+
+from flask import jsonify, Response, request
+import subprocess
+
+from flask import jsonify, Response, request
+import subprocess
+
+@app.route("/trial-ssh")
+def cekvms():
+    if request.remote_addr != '159.223.73.41':
+        return "NGAPAIN LU KONTOL!!!"
+    else:
+        try:
+            # Jalankan perintah shell dan decode dengan utf-8
+            cmd = f'printf "%s\n" "60" | trialssh'
+            x = subprocess.check_output(cmd, shell=True).decode("utf-8")  # Ubah ascii ke utf-8
+            
+            # Proses output menjadi JSON
+            result = {
+                'output': x.strip()  # Menghapus spasi berlebih
+            }
+            
+            return jsonify(result)
+        except subprocess.CalledProcessError as e:
+            return jsonify({'error': str(e)}), 500
+        except UnicodeDecodeError as e:
+            return jsonify({'error': 'Failed to decode output: ' + str(e)}), 500
+
+@app.route("/add-ssh")
+def add_ssh():
+    if request.remote_addr != '159.223.73.41':
+        return "NGAPAIN LU KONTOL!!!"
+    
+    user = request.args.get("user")
+    pw = request.args.get("password")
+    exp = request.args.get("exp")
+
+    if not user or not pw or not exp:
+        return "Error: Missing required parameters (user, password, exp)", 400
+    
+    try:
+        # Jalankan script shell dan berikan input user, password, dan expired
+        process = subprocess.Popen(
+            ["addssh"], 
+            stdin=subprocess.PIPE, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, 
+            shell=False
+        )
+        
+        # Kirim input ke script shell
+        input_data = f"{user}\n{pw}\n{exp}\n2\n"
+        out, err = process.communicate(input_data.encode("utf-8"))
+        
+        if process.returncode != 0:
+            return f"Error executing script: {err.decode('utf-8')}", 500
+        
+        # Ambil output dan kembalikan hasilnya
+        return f"success"
+    
+    except Exception as e:
+        return f"Internal Server Error: {str(e)}", 500
+
+@app.route("/trial-vmess")
+def trial_vmess():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+
+	#if request.headers.get("AUTH_KEY") == auth:
+		x = subprocess.Popen(["trialvmess"], stdin=subprocess.PIPE,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+		out, _ = x.communicate(bytes(f"60\nx\nx", "utf-8"))
+		out = out.decode("utf-8")
+		a = [x.group() for x in re.finditer("vmess://(.*)",out)]
+		if a:
+			return str(a)
+		else:
+			return "error"
+
+@app.route("/create-vmess")
+def create_vmess():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+
+	#if request.headers.get("AUTH_KEY") == auth:
+		user = request.args.get("user")
+		lim = request.args.get("limitip")
+		exp = request.args.get("exp")
+		x = subprocess.Popen(["addvmess"], stdin=subprocess.PIPE,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+		out, _ = x.communicate(bytes(f"{user}\n{exp}\n99999999\n{lim}\nx\nx", "utf-8"))
+		out = out.decode("utf-8")
+		a = [x.group() for x in re.finditer("vmess://(.*)",out)]
+		if a:
+			return str(a)
+		else:
+			return "error"
+
+@app.route("/trial-trojan")
+def trojanse():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+		x = subprocess.check_output("printf '%s\n' '60'| trialtrojan",shell=True).decode("utf-8")
+		a = [x.group() for x in re.finditer("trojan://(.*)",x)]
+		return (a)
+
+@app.route("/trojan-create")
+def create_trojan():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+	#if request.headers.get("AUTH_KEY") == auth:
+		user = request.args.get("user")
+		qu = request.args.get("quota")
+		lim = request.args.get("limitip")
+		exp = request.args.get("exp")
+		x = subprocess.Popen(["addtrojan"], stdin=subprocess.PIPE,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+		out, _ = x.communicate(bytes(f"1\n{user}\n{exp}\n{qu}\n{lim}\nx\nx", "utf-8"))
+		out = out.decode("utf-8")
+		a = [x.group() for x in re.finditer("trojan://(.*)",out)]
+		if a:
+			return (a)
+		else:
+			return "error"
+
+@app.route("/trial-vless")
+def trial_vless():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+	#if request.headers.get("AUTH_KEY") == auth:
+		exp = "60"
+		x = subprocess.Popen(["trialvless"], stdin=subprocess.PIPE,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+		out, _ = x.communicate(bytes(f"{exp}\nx\nx", "utf-8"))
+		out = out.decode("utf-8")
+		a = [x.group() for x in re.finditer("vless://(.*)",out)]
+		if a:
+			return str(a)
+		else:
+			return "error"
+
+@app.route("/create-vless")
+def create_vless():
+	if request.remote_addr != '159.223.73.41':
+		return "NGAPAIN LU KONTOL!!!"
+	else:
+	#if request.headers.get("AUTH_KEY") == auth:
+		user = request.args.get("user")
+		exp = request.args.get("exp")
+		x = subprocess.Popen(["addvless"], stdin=subprocess.PIPE,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+		out, _ = x.communicate(bytes(f"{user}\n{exp}\n9999999\n2\nx\nx", "utf-8"))
+		out = out.decode("utf-8")
+		a = [x.group() for x in re.finditer("vless://(.*)",out)]
+		if a:
+			return str(a)
+		else:
+			return "error"
+
+app.run(host=sys.argv[1], port=6969)
